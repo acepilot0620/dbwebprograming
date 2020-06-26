@@ -1,22 +1,25 @@
-from django.shortcuts import render
+# -*- coding: utf-8 -*-
+
 import pandas as pd
 import calendar
 import matplotlib.pyplot as plt
 import calmap
 import numpy as np
-from .models import Victims, Police_victim
 from sklearn.linear_model import LinearRegression
-# Create your views here.
+from .models import Victims, Police_victim
 
-
-def main(request):
-
+def dbplot():
     
-    data = pd.DataFrame(list(Victims.objects.all().values()))
-    data2 = pd.DataFrame(list(Police_victim.objects.all().values()))
+    data = pd.read_excel("C:\\Users\\user\\Desktop\\death_criminal.xlsx")
+    data2 = pd.read_excel("C:\\Users\\user\\Desktop\\death_police.xlsx")
 
-    state = data['state']
-    
+    #state = data['State']
+    state_data = Victims.objects.all()
+    state_list =[]
+    for i in state_data:
+        state_list = i.state
+    state = pd.DataFrame(state_list)
+
     state_list = list(set(state))
     state_list_count = {}
     state_list_prob = {}
@@ -25,7 +28,7 @@ def main(request):
         state_list_count[i]=0
 
     for i in range(0,len(data)):
-        state_data = data['state'][i]
+        state_data = data['State'][i]
         if state_data in state_list:
             state_list_count[state_data]+=1
         
@@ -45,29 +48,28 @@ def main(request):
 
     ##날짜 그래프
 
-    # col1 = 'date'
-    # date_list = list(set(data[col1]))
-    # date_count = {}
+    col1 = 'Date of Incident (month/day/year)'
+    date_list = list(set(data[col1]))
+    date_count = {}
 
-    # for i in range(0, len(data)):
-    #     date_data = data[col1][i]
-    #     if date_data in date_count:
-    #         date_count[date_data] += 1
-    #     else:
-    #         date_count[date_data] = 1
+    for i in range(0, len(data)):
+        date_data = data[col1][i]
+        if date_data in date_count:
+            date_count[date_data] += 1
+        else:
+            date_count[date_data] = 1
             
-    # days=list(date_count.keys())
-    # happens=list(date_count.values())
-    # events = pd.Series(happens, index=days)
+    days=list(date_count.keys())
+    happens=list(date_count.values())
+    events = pd.Series(happens, index=days)
 
-    # calmap.yearplot(events, year=2015)
-    # plt.savefig('C:/Users/user/Desktop/dbproject/dbwebprograming/rip_floyd/static/img/plot2.png')
-
+    calmap.calendarplot(events)
+    plt.savefig('C:/Users/user/Desktop/dbproject/dbwebprograming/rip_floyd/static/img/plot2.png')
     ##인종별
-    racial_list = list(set(data["race"]))
+    racial_list = list(set(data["Victim's race"]))
     racial_list_count = {}
     for i in range(0,len(data)):
-        racial_data = data["race"][i]
+        racial_data = data["Victim's race"][i]
         if racial_data in racial_list_count:
             racial_list_count[racial_data]+=1
         else:
@@ -119,14 +121,11 @@ def main(request):
     reg=LinearRegression()
     reg.fit(reg_x1,reg_x2)    
 
-   
+    r2=reg.score(reg_x1,reg_x2)
     y_pred=reg.predict(reg_x1)
-    plt.xlabel('number of criminal deaths')
-    plt.ylabel('number of police deaths')
+
     plt.scatter(reg_x1,reg_x2)
     plt.plot(reg_x1,y_pred)
-
     plt.savefig('C:/Users/user/Desktop/dbproject/dbwebprograming/rip_floyd/static/img/plot5.png')
 
-    return render(request, 'main.html')
-
+dbplot()
