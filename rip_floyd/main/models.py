@@ -18,12 +18,13 @@ class Victims(models.Model):
         return str(self.id)
 
 class Police_victim(models.Model):
-   date = models.TextField(max_length= 20, default='yyyy.mm.dd', verbose_name='날짜')
-   name = models.TextField(max_length= 50, default='default_name', verbose_name='이름')
-   state = models.TextField(max_length=10, default='default_state', verbose_name='주(State)')
-   cause_of_death = models.TextField(max_length=50, default='default_manner_of_death', verbose_name='사인')
-   def __str__(self):
-       return self.name
+    error_buffer = models.TextField(max_length=20,default="-", verbose_name='error')
+    date = models.TextField(max_length= 20, default='yyyy.mm.dd', verbose_name='날짜')
+    name = models.TextField(max_length= 50, default='default_name', verbose_name='이름')
+    state = models.TextField(max_length=10, default='default_state', verbose_name='주(State)')
+    cause_of_death = models.TextField(max_length=50, default='default_manner_of_death', verbose_name='사인')
+    def __str__(self):
+        return self.name
    
 
     
