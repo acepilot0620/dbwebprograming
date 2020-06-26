@@ -3,7 +3,6 @@ from django.db import models
 # Create your models here.
 
 class Victims(models.Model):
-    name = models.TextField(max_length=50)
     age = models.TextField(max_length=10)
     gender = models.TextField(max_length=10)
     race = models.TextField(max_length=30)
@@ -16,7 +15,7 @@ class Victims(models.Model):
     alleged_threat_level = models.TextField(max_length=20)
     fleeing = models.TextField(max_length=20)
     def __str__(self):
-        return self.name
+        return str(self.id)
 
 class Police_victim(models.Model):
    date = models.TextField(max_length= 20, default='yyyy.mm.dd', verbose_name='날짜')
