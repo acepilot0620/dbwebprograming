@@ -28,7 +28,8 @@ class Police_victim(models.Model):
 
 class News(models.Model):
     title = models.TextField(max_length=500)
-    img = models.ImageField(blank=True)
+    img_url = models.TextField(max_length=100)
+    article_url = models.TextField(max_length=100)
     timestamp = models.TextField(max_length=50)
     
     def __str__(self):

@@ -4,9 +4,12 @@ import calendar
 import matplotlib.pyplot as plt
 import calmap
 import numpy as np
+import urllib.request
 from .models import Victims, Police_victim,News
 from sklearn.linear_model import LinearRegression
-from . import crawl
+from . import news_crawl
+import threading
+from datetime import datetime
 
 # Create your views here.
 
@@ -44,7 +47,7 @@ def main(request):
     plt.bar(x[0:40],y[0:40], color='red')
     plt.ylabel("Number of criminal's death")
     plt.xlabel('state')
-    plt.savefig('C:/Users/user/Desktop/dbproject/dbwebprograming/rip_floyd/static/img/plot1.png')
+    plt.savefig('C:/Users/acepi/Desktop/dbproject/dbwebprograming/rip_floyd/static/img/plot1.png')
 
     ##날짜 그래프
 
@@ -108,7 +111,7 @@ def main(request):
     plt.bar(list(racial_list_count.keys())[0:6],prob_list[0:6], color='red')
     plt.xlabel('Racial')
     plt.ylabel("number of criminal death's who unarmed by racial")
-    plt.savefig('C:/Users/user/Desktop/dbproject/dbwebprograming/rip_floyd/static/img/plot3.png')
+    plt.savefig('C:/Users/acepi/Desktop/dbproject/dbwebprograming/rip_floyd/static/img/plot3.png')
 
     ##경찰들 순직사건 주별로
     
@@ -136,7 +139,7 @@ def main(request):
     plt.bar(x2[0:20], y2[0:20], color='red')
     plt.xlabel('State')
     plt.ylabel("number of police's death")
-    plt.savefig('C:/Users/user/Desktop/dbproject/dbwebprograming/rip_floyd/static/img/plot4.png')
+    plt.savefig('C:/Users/acepi/Desktop/dbproject/dbwebprograming/rip_floyd/static/img/plot4.png')
             
     ##경찰들의 총기순직사건과 범죄자들의 과잉진압 사건 회귀분석
 
@@ -159,17 +162,39 @@ def main(request):
     plt.scatter(reg_x1,reg_x2)
     plt.plot(reg_x1,y_pred)
 
-    plt.savefig('C:/Users/user/Desktop/dbproject/dbwebprograming/rip_floyd/static/img/plot5.png')
+    plt.savefig('C:/Users/acepi/Desktop/dbproject/dbwebprograming/rip_floyd/static/img/plot5.png')
 
-    def crawl(request):
-        news_list = crawl.croller()
+    
+    return render(request,'main.html')
+
+def crawl(request):
+    
+    news_list = news_crawl.croller()
+    all_news = News.objects.all()
+    now = datetime.now()
+    now_time = now.strftime("%Y-%m-%d-%H")
+
+    if all_news:
+        for i in news_list: 
+            for j in all_news:
+                if i.title == j.title:
+                    break
+                else:
+                    django_news = News()
+                    django_news.title = i.title
+                    django_news.timestamp = i.time_stamp
+                    django_news.img_url = i.img_url
+                    django_news.article_url = i.article_url
+                    django_news.save()
+    else:
         for i in news_list:
             django_news = News()
             django_news.title = i.title
             django_news.timestamp = i.time_stamp
-            django_news.img = urllib.request.urlretrieve(i.img_url)
+            django_news.img_url = i.img_url
+            django_news.article_url = i.article_url
             django_news.save()
-        all_news = News.objects.all()
-        context = {'news':all_news}
-    return render(request, 'crawl.html', context)
+    all_news = News.objects.all()
+    context = {'news':all_news, 'now':now_time}
+    return render(request,'main.html', context)
 

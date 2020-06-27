@@ -4,5 +4,6 @@ from .models import *
 
 
 @admin.register(Police_victim,Victims)
+@admin.register(News)
 class InfluencerAdmin(ImportExportModelAdmin):
     pass

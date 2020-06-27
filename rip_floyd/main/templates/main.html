@@ -45,7 +45,22 @@
     </div>
 </div>
     <div id="newspart">
-
+    <a href="{% url 'crawl' %}">news</a>
+    {% if news %}
+    {% for i in news%}
+    {% if i.timestamp == now %}
+    <a href="{{i.article_url}}">
+    <div style="display: flex;">
+        <img style="width: 100px; height: 100px;" src="{{i.img_url}}" alt="">
+        <div>
+            <h2>{{i.title}}</h2>
+            <p>{{i.timestamp}}</p>
+        </div>
+    </div>
+    </a>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
     </div>
     
 </body>
