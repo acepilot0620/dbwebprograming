@@ -25,7 +25,14 @@ class Police_victim(models.Model):
     cause_of_death = models.TextField(max_length=50, default='default_manner_of_death', verbose_name='사인')
     def __str__(self):
         return self.name
-   
+
+class News(models.Model):
+    title = models.TextField(max_length=500)
+    img = models.ImageField(blank=True)
+    timestamp = models.TextField(max_length=50)
+    
+    def __str__(self):
+        return self.title
 
     
    

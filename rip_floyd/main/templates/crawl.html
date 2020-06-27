@@ -1,0 +1,8 @@
+<a href="{% url 'crawl' %}">news</a>
+    {% if news %}
+    {% for i in news%}
+    <div>
+        <img src="{{i.img.url}}" alt="">
+    </div>
+    {% endfor %}
+    {% endif %}

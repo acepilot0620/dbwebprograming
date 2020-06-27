@@ -4,8 +4,10 @@ import calendar
 import matplotlib.pyplot as plt
 import calmap
 import numpy as np
-from .models import Victims, Police_victim
+from .models import Victims, Police_victim,News
 from sklearn.linear_model import LinearRegression
+from . import crawl
+
 # Create your views here.
 
 
@@ -35,11 +37,12 @@ def main(request):
     state_list_count2=sorted(state_list_count.items(), reverse=True, key=lambda item: item[1])
     x=[]
     y=[]
-    for i in range(0,20):
+    for i in range(0,40):
         x.append(state_list_count2[i][0])
         y.append(state_list_count2[i][1])
     plt.figure(figsize=(10,5))
-    plt.bar(x[0:20],y[0:20], color='red')
+    plt.bar(x[0:40],y[0:40], color='red')
+    plt.ylabel("Number of criminal's death")
     plt.xlabel('state')
     plt.savefig('C:/Users/user/Desktop/dbproject/dbwebprograming/rip_floyd/static/img/plot1.png')
 
@@ -66,6 +69,14 @@ def main(request):
     ##인종별
     racial_list = list(set(data["race"]))
     racial_list_count = {}
+    racial_unarmed_count = []
+    white_count = 0
+    unknown_count = 0
+    black_count = 0
+    hispanic_count = 0
+    pacific_count = 0
+    asian_count = 0
+
     for i in range(0,len(data)):
         racial_data = data["race"][i]
         if racial_data in racial_list_count:
@@ -73,9 +84,30 @@ def main(request):
         else:
             racial_list_count[racial_data]=1
 
+    for i in range(0, len(data)):
+        if data["race"][i] == "White" and data["unarmed"][i] == "Unarmed":
+            white_count += 1
+        elif data["race"][i] == "Unknown race" and data["unarmed"][i] == "Unarmed":
+            unknown_count += 1
+        elif data["race"][i] == "Black" and data["unarmed"][i] == "Unarmed":
+            black_count += 1
+        elif data["race"][i] == "Hispanic" and data["unarmed"][i] == "Unarmed":
+            hispanic_count += 1
+        elif data["race"][i] == "Pacific Islander" and data["unarmed"][i] == "Unarmed":
+            pacific_count += 1
+        elif data["race"][i] == "Asian" and data["unarmed"][i] == "Unarmed":
+            asian_count += 1
+
+    racial_unarmed_list = [white_count,unknown_count,black_count,hispanic_count,pacific_count,asian_count]
+    prob_list=[]
+    for i in range(0,6):
+        prob_list.append(racial_unarmed_list[i]/list(racial_list_count.values())[i])
+    
+
     plt.figure(figsize=(10,5))
-    plt.bar(list(racial_list_count.keys())[0:4],list(racial_list_count.values())[0:4], color='red')
+    plt.bar(list(racial_list_count.keys())[0:6],prob_list[0:6], color='red')
     plt.xlabel('Racial')
+    plt.ylabel("number of criminal death's who unarmed by racial")
     plt.savefig('C:/Users/user/Desktop/dbproject/dbwebprograming/rip_floyd/static/img/plot3.png')
 
     ##경찰들 순직사건 주별로
@@ -103,6 +135,7 @@ def main(request):
     plt.figure(figsize=(10,5))
     plt.bar(x2[0:20], y2[0:20], color='red')
     plt.xlabel('State')
+    plt.ylabel("number of police's death")
     plt.savefig('C:/Users/user/Desktop/dbproject/dbwebprograming/rip_floyd/static/img/plot4.png')
             
     ##경찰들의 총기순직사건과 범죄자들의 과잉진압 사건 회귀분석
@@ -128,5 +161,15 @@ def main(request):
 
     plt.savefig('C:/Users/user/Desktop/dbproject/dbwebprograming/rip_floyd/static/img/plot5.png')
 
-    return render(request, 'main.html')
+    def crawl(request):
+        news_list = crawl.croller()
+        for i in news_list:
+            django_news = News()
+            django_news.title = i.title
+            django_news.timestamp = i.time_stamp
+            django_news.img = urllib.request.urlretrieve(i.img_url)
+            django_news.save()
+        all_news = News.objects.all()
+        context = {'news':all_news}
+    return render(request, 'crawl.html', context)
 

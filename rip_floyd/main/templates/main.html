@@ -3,14 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Police Violance US</title>
+    <title>US Violance between criminal and police</title>
+    <style>
+        .plot{
+            display:flex;
+        }
+
+        .plot p{
+            padding-top: 25px;
+            font-size:20px;
+        }
+
+        .plot img{
+            height:300px;
+            width:700px;
+        }
+    </style>
 </head>
 <body>
-    <h1>US Police Violance Analysis</h1>
+    <div id = "plotpart">
+    <h1 style="text-align: center;">US Police Violance Analysis</h1>
     
-    <img src="/static/img/plot1.png" alt="">
-    <img src="/static/img/plot3.png" alt="">
-    <img src="/static/img/plot4.png" alt="">
-    <img src="/static/img/plot5.png" alt="">
+    <div class="plot">
+        <img src="/static/img/plot1.png" alt="">
+        <p>There are lots's of death's of criminal, especially in <b>California, Texas, Florida</b>.</p>
+    </div>
+    
+    <div class="plot">
+        <img src="/static/img/plot3.png" alt="">
+        <p>Even though, white people do more criminals, but high probability killed unarmed people is <b>Black</b>...</p>
+    </div>
+
+    <div class="plot">
+        <img src="/static/img/plot4.png" alt="">
+        <p>There are police death statistics... many deaths in <b>Texas, California, NewYork</b></p>
+    </div>
+    
+    <div class="plot">
+        <img src="/static/img/plot5.png" alt="">
+        <p>State happens high number of criminal deaths seemd to have tendency to high police deaths... </p>
+    </div>
+</div>
+    <div id="newspart">
+
+    </div>
+    
 </body>
 </html>

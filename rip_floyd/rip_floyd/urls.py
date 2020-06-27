@@ -22,5 +22,6 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.main, name='main'),
-    
-]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path('crawl/',views.crawl, name="crawl"),
+
+] +static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
